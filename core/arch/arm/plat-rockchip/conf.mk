@@ -225,6 +225,32 @@ CFG_SHMEM_START  ?= 0x72000000
 CFG_SHMEM_SIZE   ?= 0x00400000
 endif
 
+ifeq ($(PLATFORM_FLAVOR),rk3568)
+include core/arch/arm/cpu/cortex-armv8-0.mk
+$(call force,CFG_TEE_CORE_NB_CORE,4)
+$(call force,CFG_ARM_GICV3,y)
+$(call force,CFG_CRYPTO_WITH_CE,y)
+$(call force,CFG_AUTO_MAX_PA_BITS,y)
+
+CFG_TZDRAM_START ?= 0x08400000
+CFG_TZDRAM_SIZE  ?= 0x02000000
+CFG_SHMEM_START  ?= 0x0A400000
+CFG_SHMEM_SIZE   ?= 0x00400000
+
+CFG_EARLY_CONSOLE ?= y
+CFG_EARLY_CONSOLE_BASE ?= UART2_BASE
+CFG_EARLY_CONSOLE_SIZE ?= UART2_SIZE
+CFG_EARLY_CONSOLE_BAUDRATE ?= 1500000
+CFG_EARLY_CONSOLE_CLK_IN_HZ ?= 24000000
+
+# KeyMint HAL 是 early_hal，必须在本平台 /data 挂载前完成 TA 加载。
+# “Secure Storage TA” store 依赖 /data/vendor/tee，不可用时会让后续 REE
+# store 的读取在 ldelf 里失败（STORAGE_NOT_AVAILABLE）。本平台不使用该
+# 功能，TA 二进制只从 /vendor/lib/optee_armtz 的 REE store 加载。
+CFG_SECSTOR_TA := n
+CFG_SECSTOR_TA_MGMT_PTA := n
+endif
+
 ifeq ($(platform-flavor-armv8),1)
 $(call force,CFG_ARM64_core,y)
 $(call force,CFG_WITH_ARM_TRUSTED_FW,y)

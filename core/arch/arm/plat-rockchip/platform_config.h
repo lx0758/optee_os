@@ -146,6 +146,34 @@
 #define FIREWALL_DDR_BASE	0xff5f0000
 #define FIREWALL_DDR_SIZE	SIZE_K(64)
 
+#elif defined(PLATFORM_FLAVOR_rk3568)
+
+#define GIC_BASE		0xfd400000
+#define GIC_SIZE		SIZE_M(1)
+#define GICD_BASE		GIC_BASE
+#define GICR_BASE		0xfd460000
+/* GICv3 不需要 GICC，但 plat-rockchip/main.c 的 gic_init() 会传它。 */
+#define GICC_BASE		0
+
+#define UART2_BASE		0xfe660000
+#define UART2_SIZE		SIZE_K(64)
+
+#define FIREWALL_DDR_BASE	0xfe200000
+#define FIREWALL_DDR_SIZE	SIZE_K(4)
+
+#define TRNG_S_BASE		0xfe380000
+#define TRNG_S_SIZE		SIZE_K(4)
+
+/* OTP（只读，用于 HUK 取证/读取；不写熔丝）。寄存器延伸到 0x2fff，映射 16 KiB。 */
+#define OTP_S_BASE		0xfe3a0000
+#define OTP_S_SIZE		SIZE_K(16)
+#define SGRF_BASE		0xfdd18000
+#define SGRF_SIZE		SIZE_K(4)
+#define CRU_BASE		0xfdd20000
+#define CRU_SIZE		SIZE_K(4)
+#define SCRU_BASE		0xfdd10000
+#define SCRU_SIZE		SIZE_K(4)
+
 #elif defined(PLATFORM_FLAVOR_rk3588)
 
 #define GIC_BASE		0xfe600000

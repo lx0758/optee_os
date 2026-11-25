@@ -20,7 +20,11 @@
 #endif
 
 /* Size needed for xtest to pass reliably on both ARM32 and ARM64 */
-#define MPI_MEMPOOL_SIZE	(46 * 1024)
+/*
+ * RK3568: 46KB 在 2048 位 RSA 上容易触发 mempool 回退路径，放大到
+ * 256KB 后 RSA 生成/签名明显改善。
+ */
+#define MPI_MEMPOOL_SIZE	(256 * 1024)
 
 /* From mbedtls/library/bignum.c */
 #define ciL		(sizeof(mbedtls_mpi_uint))	/* chars in limb  */

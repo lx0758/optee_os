@@ -158,6 +158,10 @@ srcs-$(sm-$(ta-target)) += $(addprefix mbedtls/library/, $(SRCS_TLS))
 srcs-$(sm-$(ta-target)) += $(addprefix mbedtls/library/, $(SRCS_PSA))
 
 cflags-lib-y += -Wno-redundant-decls
+
+# RK3568: 提高 MPI 窗口，减少 RSA 模乘次数（默认 3）。WK 5 在
+# 1024 位 CRT 模幂上接近最优，表构建开销仍可接受。
+cflags-lib-y += -DMBEDTLS_MPI_WINDOW_SIZE=5
 cflags-lib-y += -Wno-switch-default
 cflags-lib-y += -Wno-declaration-after-statement
 cflags-lib-y += -Wno-unused-function
