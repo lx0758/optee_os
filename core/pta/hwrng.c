@@ -16,9 +16,6 @@
 
 #define PTA_NAME "rng.pta"
 
-/* This PTA only works with hardware random number generators */
-static_assert(!IS_ENABLED(CFG_WITH_SOFTWARE_PRNG));
-
 static TEE_Result rng_get_entropy(uint32_t types,
 				  TEE_Param params[TEE_NUM_PARAMS])
 {

@@ -249,7 +249,7 @@ CFG_EARLY_CONSOLE_CLK_IN_HZ ?= 24000000
 # PRNG 后 TA 侧的 crypto_rng_read() 直接走 hw_get_random_bytes()，不影响 TA 随机数。
 CFG_HWRNG_PTA ?= y
 CFG_HWRNG_QUALITY ?= 1024
-CFG_WITH_SOFTWARE_PRNG ?= n
+CFG_WITH_SOFTWARE_PRNG ?= y
 
 # 加密库不做体积优化：CFG_CRYPTO_SIZE_OPTIMIZATION 默认 y（core/crypto.mk:5），
 # 那套优化是拿性能换体积；本平台 BL32 体积不是瓶颈，关掉换取加解密吞吐。
