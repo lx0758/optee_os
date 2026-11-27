@@ -243,6 +243,23 @@ CFG_EARLY_CONSOLE_SIZE ?= UART2_SIZE
 CFG_EARLY_CONSOLE_BAUDRATE ?= 1500000
 CFG_EARLY_CONSOLE_CLK_IN_HZ ?= 24000000
 
+# 把 cryptov2 TRNG 通过 RNG PTA 暴露给 Linux（optee-rng），否则非安全世界没有任何
+# hwrng，CRNG 只能靠 jitter 攒熵，启动早期 getrandom() 会被阻塞十几秒。
+# CFG_HWRNG_PTA 与软件 PRNG 互斥（core/pta/hwrng.c 的 static_assert），关掉软件
+# PRNG 后 TA 侧的 crypto_rng_read() 直接走 hw_get_random_bytes()，不影响 TA 随机数。
+CFG_HWRNG_PTA ?= y
+CFG_HWRNG_QUALITY ?= 1024
+CFG_WITH_SOFTWARE_PRNG ?= n
+
+# 加密库不做体积优化：CFG_CRYPTO_SIZE_OPTIMIZATION 默认 y（core/crypto.mk:5），
+# 那套优化是拿性能换体积；本平台 BL32 体积不是瓶颈，关掉换取加解密吞吐。
+CFG_CRYPTO_SIZE_OPTIMIZATION ?= n
+
+# TEE OS 内建栈保护：默认 n。安全世界是信任边界，栈溢出防护值得这点开销。
+# CFG_CORE_STACK_PROTECTOR_STRONG 默认 y，所以这里实际启用的是
+# -fstack-protector-strong。
+CFG_CORE_STACK_PROTECTOR ?= y
+
 # KeyMint HAL 是 early_hal，必须在本平台 /data 挂载前完成 TA 加载。
 # “Secure Storage TA” store 依赖 /data/vendor/tee，不可用时会让后续 REE
 # store 的读取在 ldelf 里失败（STORAGE_NOT_AVAILABLE）。本平台不使用该
